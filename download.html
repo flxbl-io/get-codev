@@ -7,7 +7,7 @@
     
 
     <!-- Curious what created these downloads? Check out https://hydraulic.dev -->
-    <meta name="generator" content="Conveyor: 15.1"/>
+    <meta name="generator" content="Conveyor: 17.0"/>
 
     
     <link rel=icon href="icon.png" sizes="any" type="image/png">
@@ -50,9 +50,13 @@
             color: var(--foreground);
         }
 
-        html, body {
+        /* Only set dimensions if needed for flex centering */
+        html {
             height: 100%;
-            width: 100%;
+        }
+        body {
+            min-height: 100%;
+            margin: 0;
         }
 
         .download-button > svg > g > path {
@@ -292,7 +296,7 @@
 
             <h1 id="title">codev</h1>
 
-            <span id="version">Version <span>0.1.1</span></span>
+            <span id="version">Version <span>0.1.2</span></span>
 
             <div id="pane-win">
                 
@@ -313,8 +317,8 @@
                     
                         <p class="smaller-fonts" style="line-height: 200%" id="windows-download-options">
                             <span id="amd-title">Intel: &nbsp;&nbsp;</span>
-                            <a href="https://github.com/flxbl-io/get-codev/releases/latest/download/codev-0.1.1-windows-amd64.zip" download>Download .zip</a> &nbsp;&nbsp;
-                            <a href="https://github.com/flxbl-io/get-codev/releases/latest/download/codev-0.1.1.x64.msix" download>Download .msix</a> &nbsp;&nbsp;
+                            <a href="https://github.com/flxbl-io/get-codev/releases/latest/download/codev-0.1.2-windows-amd64.zip" download>Download .zip</a> &nbsp;&nbsp;
+                            <a href="https://github.com/flxbl-io/get-codev/releases/latest/download/codev-0.1.2.x64.msix" download>Download .msix</a> &nbsp;&nbsp;
                             <a href="https://github.com/flxbl-io/get-codev/releases/latest/download/codev-79d37nk7g1gjc.appinstaller" download>Download .appinstaller</a>
                         </p>
                     
@@ -343,7 +347,7 @@
             <div id="pane-mac">
                 
                     <!-- Mac AMD64 -->
-                    <a id="mac-amd64" href="https://github.com/flxbl-io/get-codev/releases/latest/download/codev-0.1.1-mac-amd64.zip" class="download-button">
+                    <a id="mac-amd64" href="https://github.com/flxbl-io/get-codev/releases/latest/download/codev-0.1.2-mac-amd64.zip" class="download-button">
                         <svg width="2em" height="2em" viewBox="0 0 256 315" version="1.1" xmlns="http://www.w3.org/2000/svg"
                              xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" style="overflow:visible;">
                             <g transform="translate(0,-30)">
@@ -356,7 +360,7 @@
                     <br><br>
 
                     <!-- Mac ARM -->
-                    <a id="mac-aarch64" href="https://github.com/flxbl-io/get-codev/releases/latest/download/codev-0.1.1-mac-aarch64.zip" class="download-button">
+                    <a id="mac-aarch64" href="https://github.com/flxbl-io/get-codev/releases/latest/download/codev-0.1.2-mac-aarch64.zip" class="download-button">
                         <svg width="2em" height="2em" viewBox="0 0 256 315" version="1.1" xmlns="http://www.w3.org/2000/svg"
                              xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" style="overflow:visible;">
                             <g transform="translate(0,-30)">
@@ -371,6 +375,9 @@
 
                 <p class="smaller-fonts" style="line-height: 200%; visibility: none">&nbsp;</p> <!-- no alternative formats at this time -->
 
+                
+
+                <!-- Show unavailable message if only one arch is available but it's the wrong one -->
                 
 
                 <div class="alternative-downloads smaller-fonts">
@@ -457,12 +464,26 @@
             if (os == "mac") {
                 if (arch == "amd64") {
                     let el = document.getElementById("mac-aarch64");
-                    if (el)
+                    if (el) {
                         el.style = "display: none";
+                        // If we only have ARM builds, show the unavailable message
+                        let amd = document.getElementById("mac-amd64");
+                        if (!amd) {
+                            let unavail = document.getElementById("mac-unavailable");
+                            if (unavail) unavail.style = "display: block";
+                        }
+                    }
                 } else if (arch == "aarch64") {
                     let el = document.getElementById("mac-amd64");
-                    if (el)
+                    if (el) {
                         el.style = "display: none";
+                        // If we only have Intel builds, show the unavailable message
+                        let arm = document.getElementById("mac-aarch64");
+                        if (!arm) {
+                            let unavail = document.getElementById("mac-unavailable");
+                            if (unavail) unavail.style = "display: block";
+                        }
+                    }
                 }
             } else if (os == "linux") {
                 if (arch == "amd64") {
@@ -519,7 +540,14 @@
 
         const panes = document.getElementById("panes");
         if (panes.children.length == 1) {
-            // Only one OS supported. Do nothing - it will be visible already.
+            // Only one OS supported. Show the single pane.
+            for (const o of ["win", "mac", "linux"]) {
+                let pane = document.getElementById("pane-" + o);
+                if (pane) {
+                    pane.style = "";  // Make visible
+                    break;
+                }
+            }
         } else if (document.location.hash) {
             showOS(document.location.hash.substring(1));
         } else {

@@ -11,7 +11,7 @@ Codev is a desktop application that helps you manage and work with Flxbl project
 
 ### macOS
 
-1. Visit the [latest release page](https://flxbl-io.github.io/get-codev/download.html)
+1. Visit the [latest release page](https://get-codev.flxbl.io)
 2. Download the appropriate version for your Mac:
    - For Apple Silicon (M1/M2) Macs: `codev-xxx-aarch64.dmg`
    - For Intel Macs: `codev-xxxx-amd64.zip`
@@ -21,7 +21,7 @@ Codev is a desktop application that helps you manage and work with Flxbl project
 
 ### Windows (Not Available yet)
 
-1. Visit the [latest release page](https://flxbl-io.github.io/get-codev/download.html)
+1. Visit the [latest release page](https://get-codev.flxbl.io)
 2. Download the appinstaller or msix version
 3. Run the installer
 4. Follow the installation wizard instructions
